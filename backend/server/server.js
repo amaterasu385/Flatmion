@@ -75,3 +75,25 @@ app.post('/api/login', async (req, res) => {
     res.status(500).json({ error: 'Login fehlgeschlagen!' });
   }
 });
+
+// Endpunkt zum Abrufen der Gebäude
+app.get('/api/buildings', (req, res) => {
+    db.query('SELECT * FROM Buildings', (err, results) => {
+        if (err) {
+            console.error('Fehler beim Abrufen der Gebäude:', err);
+            return res.status(500).json({ error: 'Internal Server Error' });
+        }
+        res.status(200).json(results); // Gebäude-Daten zurückgeben
+    });
+});
+
+// Endpunkt zum Abrufen der Benutzer
+app.get('/api/users', (req, res) => {
+    db.query('SELECT * FROM Users', (err, results) => {
+        if (err) {
+            console.error('Fehler beim Abrufen der Benutzer:', err);
+            return res.status(500).json({ error: 'Internal Server Error' });
+        }
+        res.status(200).json(results); // Benutzer-Daten zurückgeben
+    });
+}); 
