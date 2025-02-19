@@ -1,0 +1,16 @@
+/frontend/node_modules
+/frontend/dist
+/frontend/build
+/backend/node_modules
+/backend/build
+/backend/data
+/backend/dist
+/frontend/.vscode
+/frontend/package-lock.json
+/backend/package-lock.json
+/frontend/src/data
+tmp
+/.vscode
+/backend.v2/IntegrationC*
+/frontend.v3/src/config/production.ts
+.env
