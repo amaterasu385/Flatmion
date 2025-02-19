@@ -2,7 +2,7 @@
     <div class="dashboard">
         <nav class="sidebar">
             <div class="logo">
-                <h2>Our App</h2>
+                <h2>Flatmion</h2>
             </div>
             <ul class="nav-links">
                 <li @click="activeSection = 'buildings'" :class="{ active: activeSection === 'buildings' }">
@@ -31,9 +31,10 @@
 
             <section v-if="activeSection === 'buildings'" class="buildings">
                 <div class="card" v-for="building in buildings" :key="building.id">
-                    <img :src="building.image" :alt="building.name">
-                    <h3>{{ building.name }}</h3>
-                    <p>{{ building.address }}</p>
+                    <p class="building-id">ID: {{ building.buildingId }}</p>
+                    <h3>{{ building.streetName }}</h3>
+                    <p>{{ building.houseNumber }}</p>
+                    <p>{{ building.city }}</p>
                 </div>
             </section>
 
@@ -41,16 +42,18 @@
                 <table>
                     <thead>
                         <tr>
-                            <th>Name</th>
+                            <th>First Name</th>
+                            <th>Last Name</th>
                             <th>Email</th>
                             <th>Role</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr v-for="user in users" :key="user.id">
-                            <td>{{ user.name }}</td>
-                            <td>{{ user.email }}</td>
-                            <td>{{ user.role }}</td>
+                            <td>{{ user.firstName }}</td>
+                            <td>{{ user.lastName }}</td>
+                            <td>{{ user.emailAddress }}</td>
+                            <td>{{ user.roleId }}</td>
                         </tr>
                     </tbody>
                 </table>
@@ -60,21 +63,43 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
+import axios from 'axios';
+
+// Axios Basis-URL konfigurieren
+axios.defaults.baseURL = 'http://localhost:3002';
 
 const activeSection = ref('buildings');
+const buildings = ref([]);
+const users = ref([]);
+const noBuildingsMessage = ref('Keine Gebäude verfügbar.');
+const noUsersMessage = ref('Keine Benutzer verfügbar.');
+const expandedBuildingId = ref(null);
 
-const buildings = [
-    { id: 1, name: 'Tower A', address: '123 Main St', image: 'https://placekitten.com/300/200' },
-    { id: 2, name: 'Complex B', address: '456 Oak Ave', image: 'https://placekitten.com/301/200' },
-    { id: 3, name: 'Skyscraper C', address: '789 Pine Rd', image: 'https://placekitten.com/302/200' },
-];
+const fetchBuildings = async () => {
+    try {
+        const response = await axios.get('/api/buildings');
+        buildings.value = response.data;
+    } catch (error) {
+        console.error('Fehler beim Abrufen der Gebäude:', error);
+        noBuildingsMessage.value = 'Fehler beim Abrufen der Gebäude.';
+    }
+};
 
-const users = [
-    { id: 1, name: 'Alice Johnson', email: 'alice@example.com', role: 'Admin' },
-    { id: 2, name: 'Bob Smith', email: 'bob@example.com', role: 'User' },
-    { id: 3, name: 'Carol Williams', email: 'carol@example.com', role: 'Manager' },
-];
+const fetchUsers = async () => {
+    try {
+        const response = await axios.get('/api/users');
+        users.value = response.data;
+    } catch (error) {
+        console.error('Fehler beim Abrufen der Benutzer:', error);
+        noUsersMessage.value = 'Fehler beim Abrufen der Benutzer.';
+    }
+};
+
+onMounted(() => {
+    fetchBuildings();
+    fetchUsers();
+});
 </script>
 
 <style>
